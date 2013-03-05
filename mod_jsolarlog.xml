@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" version="2.5" client="site">
+  <name>JSolarlog</name>
+  <author>Dieter Blocher</author>
+  <version>1.0</version>
+  <description>Ein Modul für die Anzeige eines Solarlog Banners in Joomla<description>
+    
+    
+  <files>
+    <filename module="mod_jsolarlog">mod_jsolarlog.php</filename>
+  </files>
+</extension>
+  
