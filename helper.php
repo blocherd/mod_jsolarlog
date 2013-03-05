@@ -75,6 +75,29 @@ class modJSolarlogHelper
     }
     return $ret;
   }
+
+  static function reorderDaysArray($daten)
+  {
+    $i = 0;
+    foreach($daten as $aktuellerWert) 
+    {
+      foreach ($aktuellerWert as $aktuellerSchlüssel => $aktuellerWert) 
+      {
+	if (is_array($aktuellerWert))
+	{
+	  $puffer = trim(trim($aktuellerWert['dx  ']), '"');
+	  $puffer = explode( '|', $puffer);
+	  $j=0;
+	  foreach ($puffer as $pufferWert) 
+	  {
+	     $zeile[$j++] = explode( ';', $pufferWert);
+	  }
+	}
+      }
+      $ret[$i++] = $zeile;
+    }
+    return $ret;
+  }
  
   static function holeSolarLogDaten_MinCur()
   {
@@ -95,7 +118,7 @@ class modJSolarlogHelper
     {
       parse_str($line, $daten[$line_num]);
     }
-    return modJSolarlogHelper::reorderArray($daten);
+    return modJSolarlogHelper::reorderDaysArray($daten);
   }
 
   static function holeSolarLogDaten_MinDay()
@@ -136,12 +159,10 @@ class modJSolarlogHelper
 
   static function gibPacDaten($datenBase, $datenMinDay)
   {
-     //print_r($minday);
     $WRInfos = $datenBase['WRInfo'];
     $j = 0;
     foreach (array_reverse($datenMinDay) as $zeile)
     {
-      //print_r($zeile);
       $Pac["DatumZeit"] = $zeile[0][0];
       $i = 1;
       $puffer = 0;
@@ -173,32 +194,122 @@ class modJSolarlogHelper
     return $datenBase['var_AnlagenKWP'];
   }
 
-  static function gibErtrag($datenBase)
+   static function gibErtrag($datenBase, $days)
   {
-    $ErtragSumme = 0;
-    foreach ($datenBase as $zeile)
+    $WRInfos = $datenBase['WRInfo'];
+    $j = 0;
+    foreach (array_reverse($days) as $zeile)
     {
-      $ErtragSumme += $zeile["Pac"];
+      $Ertrag["Datum"] = $zeile[0][0];
+      $i = 1;
+      $puffer = 0;
+      foreach ($WRInfos as $WRNr => $WRInfo)
+      {
+	if( $WRInfo[11]==0 || ($WRInfo[11]==2 && $WRInfo[14]==0) || $datenBase['AnzahlWR']==1 ) 
+	{
+	  $puffer += $zeile[$i++][0];
+	}
+      }
+      $Ertrag["Summe"] = $puffer;
+      $ret = $Ertrag;
     }
-    return $ErtragSumme;
+    return $ret;
+  }
+
+  static function gibWRInfo($datenBase)
+  {
+    return $datenBase['WRInfo'];
+  }
+
+  static function gibTimeStartArray($datenBase)
+  {
+    $ret = $datenBase['var_time_start_'];
+    return modJSolarlogHelper::gibArray($ret);
+  }
+
+  static function gibTimeEndeArray($datenBase)
+  {
+    $ret = $datenBase['var_time_end_'];
+    return modJSolarlogHelper::gibArray($ret);
+  }
+
+  static function gibDatumsFormat($datenBase)
+  {
+    return $datenBase['var_DateFormat_'];
+  }
+
+  static function gibAktMonat($Ertrag, $datenBase)
+  {
+    $Datum = $Ertrag['Datum'];
+    $DatumsFormat = modJSolarlogHelper::gibDatumsFormat($datenBase);
+    $findMich   = 'mm';
+    $pos = strpos($DatumsFormat, $findMich);
+    return (int)substr($Datum, $pos, 2);
+  }
+
+  static function gibMonatsZeiten($AktMonat, $TimeStart, $TimeEnde)
+  {
+    $start = $TimeStart[$AktMonat-1];
+    $ende = $TimeEnde[$AktMonat-1];
+    return ($ende - $start);
+  }
+ 
+  static function gibArray($ret)
+  {
+    $findMich   = 'new Array(';
+    $pos = strpos($ret, $findMich);
+
+    if ($pos !== false && $pos == 0)
+    {
+      $ret = ltrim($ret, $findMich); 
+      $ret = trim($ret);
+      $findMich = ")";
+      $ret = rtrim($ret, $findMich); 
+      $ret = explode( ',', $ret );
+    }
+    return $ret;
   }
 
   static function generiereErtragsdaten()
   {
     $basevars = modJSolarlogHelper::holeSolarLogDaten_BaseVars();
     $maxWRP = modJSolarlogHelper::gibMaxWRP($basevars);
-    //echo $maxWRP;
-    //echo "\n";
+
     $minday = modJSolarlogHelper::holeSolarLogDaten_MinDay();
     $PacDaten = modJSolarlogHelper::gibPacDaten($basevars, $minday);
     $Intervall = modJSolarlogHelper::gibIntervall($basevars);
     
     $mincur = modJSolarlogHelper::holeSolarLogDaten_MinCur();
-    $PacAkt = modJSolarlogHelper::gibPacAkt($mincur);
-    $ErtragSumme = modJSolarlogHelper::gibErtrag($PacDaten);
+    
+    $days = modJSolarlogHelper::holeSolarLogDaten_Days();  
+    $Ertrag = modJSolarlogHelper::gibErtrag($basevars, $days);
     $AnlagenKWP = modJSolarlogHelper::gibAnlagenKWP($basevars);
-    $Psum =  floor($ErtragSumme/$AnlagenKWP*10)/10;
+    
+    $Tagesleistung = floor(($Ertrag['Summe']/100)/10);
+    $PacAkt = modJSolarlogHelper::gibPacAkt($mincur);
+    $Psum =  floor($Ertrag['Summe']/$AnlagenKWP*10)/10;
+   
+    $TimeStart = modJSolarlogHelper::gibTimeStartArray($basevars);
+    $TimeEnde = modJSolarlogHelper::gibTimeEndeArray($basevars);
+    
+    $AktMonat = modJSolarlogHelper::gibAktMonat($Ertrag, $basevars);
+    //$MonatsZeiten = modJSolarlogHelper::gibMonatsZeiten($AktMonat, $TimeStart, $TimeEnde);
+    $MonatsZeiten = modJSolarlogHelper::gibMonatsZeiten(7, $TimeStart, $TimeEnde);
+    //echo "\n";
+    //print_r($AktMonat);
+    //echo "\n";
+    //print_r($TimeStart);
+    echo "\n";
+    print_r($MonatsZeiten);
+    echo "\n";
+    print_r($PacAkt);
+    echo "\n";
+    print_r($Tagesleistung);
+    echo "\n";
     print_r($Psum);
+    echo "\n";
+    //print_r($basevars);
+    //echo "\n";
   }
   
 /*
