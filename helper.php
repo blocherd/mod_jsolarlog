@@ -99,9 +99,8 @@ class modJSolarlogHelper
     return $ret;
   }
  
-  static function holeSolarLogDaten_MinCur()
+  static function holeSolarLogDaten_MinCur($datei)
   {
-    $datei = 'http://www.spvgg-leidringen.de/solarlog_data/min_cur.js';
     $lines = file ($datei);
     foreach ($lines as $line_num => $line)
     {
@@ -110,9 +109,8 @@ class modJSolarlogHelper
     return modJSolarlogHelper::reorderArray($daten);
   }
 
-  static function holeSolarLogDaten_Days()
+  static function holeSolarLogDaten_Days($datei)
   {
-    $datei = 'http://www.spvgg-leidringen.de/solarlog_data/days.js';
     $lines = file ($datei);
     foreach ($lines as $line_num => $line)
     {
@@ -121,9 +119,8 @@ class modJSolarlogHelper
     return modJSolarlogHelper::reorderDaysArray($daten);
   }
 
-  static function holeSolarLogDaten_MinDay()
+  static function holeSolarLogDaten_MinDay($datei)
   {
-    $datei = 'http://www.spvgg-leidringen.de/solarlog_data/min_day.js';
     $lines = file ($datei);
     foreach ($lines as $line_num => $line)
     {
@@ -132,9 +129,8 @@ class modJSolarlogHelper
     return modJSolarlogHelper::reorderMinDayArray($daten);
   }
 
-  static function holeSolarLogDaten_BaseVars()
+  static function holeSolarLogDaten_BaseVars($datei)
   {
-    $datei = 'http://www.spvgg-leidringen.de/solarlog_data/base_vars.js';
     $lines = file ($datei);
     foreach ($lines as $line_num => $line)
     {
@@ -270,18 +266,18 @@ class modJSolarlogHelper
     return $ret;
   }
 
-  static function generiereDaten()
+  static function generiereDaten($datei)
   {
-    $basevars = modJSolarlogHelper::holeSolarLogDaten_BaseVars();
+    $basevars = modJSolarlogHelper::holeSolarLogDaten_BaseVars($datei['base_vars.js']);
     $maxWRP = modJSolarlogHelper::gibMaxWRP($basevars);
 
-    $minday = modJSolarlogHelper::holeSolarLogDaten_MinDay();
+    $minday = modJSolarlogHelper::holeSolarLogDaten_MinDay($datei['min_day.js']);
     $PacDaten = modJSolarlogHelper::gibPacDaten($basevars, $minday);
     $Intervall = modJSolarlogHelper::gibIntervall($basevars);
     
-    $mincur = modJSolarlogHelper::holeSolarLogDaten_MinCur();
+    $mincur = modJSolarlogHelper::holeSolarLogDaten_MinCur($datei['min_cur.js']);
     
-    $days = modJSolarlogHelper::holeSolarLogDaten_Days();  
+    $days = modJSolarlogHelper::holeSolarLogDaten_Days($datei['days.js']);  
     $Ertrag = modJSolarlogHelper::gibErtrag($basevars, $days);
     $AnlagenKWP = modJSolarlogHelper::gibAnlagenKWP($basevars);
     
@@ -301,12 +297,13 @@ class modJSolarlogHelper
     $result["PacAkt"] = $PacAkt;
     $result["Psum"] = $Psum;
     $result["PacDaten"] = $PacDaten;
+    $result["MaxWRP"] = $maxWRP;
     return $result;
   }
 
-  static function generiereErtragsdaten()
+  static function generiereErtragsdaten($datei)
   {
-    $daten = modJSolarlogHelper::generiereDaten();
+    $daten = modJSolarlogHelper::generiereDaten($datei);
     return $daten;
   }
 }
