@@ -270,7 +270,7 @@ class modJSolarlogHelper
     return $ret;
   }
 
-  static function generiereErtragsdaten()
+  static function generiereDaten()
   {
     $basevars = modJSolarlogHelper::holeSolarLogDaten_BaseVars();
     $maxWRP = modJSolarlogHelper::gibMaxWRP($basevars);
@@ -285,7 +285,7 @@ class modJSolarlogHelper
     $Ertrag = modJSolarlogHelper::gibErtrag($basevars, $days);
     $AnlagenKWP = modJSolarlogHelper::gibAnlagenKWP($basevars);
     
-    $Tagesleistung = floor(($Ertrag['Summe']/100)/10);
+    $Tagesleistung = floor($Ertrag['Summe']/100)/10;
     $PacAkt = modJSolarlogHelper::gibPacAkt($mincur);
     $Psum =  floor($Ertrag['Summe']/$AnlagenKWP*10)/10;
    
@@ -293,54 +293,21 @@ class modJSolarlogHelper
     $TimeEnde = modJSolarlogHelper::gibTimeEndeArray($basevars);
     
     $AktMonat = modJSolarlogHelper::gibAktMonat($Ertrag, $basevars);
-    //$MonatsZeiten = modJSolarlogHelper::gibMonatsZeiten($AktMonat, $TimeStart, $TimeEnde);
-    $MonatsZeiten = modJSolarlogHelper::gibMonatsZeiten(7, $TimeStart, $TimeEnde);
-    //echo "\n";
-    //print_r($AktMonat);
-    //echo "\n";
-    //print_r($TimeStart);
-    echo "\n";
-    print_r($MonatsZeiten);
-    echo "\n";
-    print_r($PacAkt);
-    echo "\n";
-    print_r($Tagesleistung);
-    echo "\n";
-    print_r($Psum);
-    echo "\n";
-    //print_r($basevars);
-    //echo "\n";
-  }
-  
-/*
-  var i, i2 , y, maxWRP=0, Pac, w;
-    document.write("<div id='balken'><img src='e.gif' width='0' height='60'>");
-    for( i=0; i<AnzahlWR; i++ ) {
-        if( WRInfo[i][11]==0 || (WRInfo[i][11]==2 && WRInfo[i][14]==0) || AnzahlWR==1 ) {
-           maxWRP += MaxWRP[i][0];
-        }
-    }
 
-    i=mi-1;
-    while(i>0) {
-        Pac = 0;
-        for( i2=0; i2<AnzahlWR; i2++ ) {
-            if( WRInfo[i2][11]==0 || (WRInfo[i2][11]==2 && WRInfo[i2][14]==0) || AnzahlWR==1 ) {
-               data = enumData( m[i], i2+1 );
-               Pac += data[1];
-            }
-        }
-        y = Pac/maxWRP*55;
-        if( y>1 ) {
-            w = Intervall/300;
-            document.write("<img src='y.gif' width='"+w+"' height='"+y+"'>");
-        }
-        i--;
-    }
-    document.write("</div>");
-    i=(time_end[today.getMonth()]-time_start[today.getMonth()])*12
-//    document.write("<div id='xachse'><img src='black.gif' width='"+i+"' height='1'></div>");
-//    document.write("<div id='yachse'><img src='black.gif' width='1' height='55'></div>");
-*/
+    $MonatsZeiten = modJSolarlogHelper::gibMonatsZeiten(7, $TimeStart, $TimeEnde);
+    
+    $result["MonatsZeiten"] = $MonatsZeiten;
+    $result["Tagesleistung"] = $Tagesleistung;
+    $result["PacAkt"] = $PacAkt;
+    $result["Psum"] = $Psum;
+    $result["PacDaten"] = $PacDaten;
+    return $result;
+  }
+
+  static function generiereErtragsdaten()
+  {
+    $daten = modJSolarlogHelper::generiereDaten();
+    return $daten;
+  }
 }
 ?>
