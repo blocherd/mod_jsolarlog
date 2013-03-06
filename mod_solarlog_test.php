@@ -29,10 +29,15 @@ $daten = modJSolarlogHelper::generiereErtragsdaten($datei);
 //print_r($daten);
 $diagramm = erzeugeDiagramDaten($daten);
 
+
+echo "<div style=\"position:absolute; top:0px; left:0px; width:180px; height:60px ;background-color:#000000\" id='balken'>\n";
+
 foreach ($diagramm as $value) 
 {
   echo "$value\n";
 }
+echo "</div>";
+echo "</div>";
 //get base_vars
 //$basevars = modJSolarlogHelper::holeSolarLogDaten_BaseVars();
 //get days
@@ -72,7 +77,7 @@ function erzeugeDiagramDaten($daten)
       {
 	$y = floor($y);
 	$w = floor($Intervall/300);
-	$ret[] = "<img src=\"http://www.spvgg-leidringen.de/solarlog_data/y.gif\" width=\"$w\" height=\"$y\">";
+	$ret[] = "<img style=\"float:left; margin:0;\" src=\"http://www.spvgg-leidringen.de/solarlog_data/y.gif\" width=\"$w\" height=\"$y\">";
       }
   }
   return $ret;
