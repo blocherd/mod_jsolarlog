@@ -30,8 +30,8 @@ $daten = modJSolarlogHelper::generiereErtragsdaten($datei);
 $diagramm = erzeugeDiagramDaten($daten);
 
 
-echo "<div style=\"position:absolute; top:0px; left:0px; width:180px; height:60px ;background-color:#000000\" id='balken'>\n";
-
+echo "<div style=\"position:absolute; top:0; left:0px; width:180px; height:60px ;background-color:#000000\" id='balken'>\n";
+echo "<div style=\"position:absolute; letf:0 ;bottom:0;>\n";
 foreach ($diagramm as $value) 
 {
   echo "$value\n";
@@ -77,7 +77,7 @@ function erzeugeDiagramDaten($daten)
       {
 	$y = floor($y);
 	$w = floor($Intervall/300);
-	$ret[] = "<img style=\"float:left; margin:0;\" src=\"http://www.spvgg-leidringen.de/solarlog_data/y.gif\" width=\"$w\" height=\"$y\">";
+	$ret[] = "<img style=\"float:left; \" src=\"http://www.spvgg-leidringen.de/solarlog_data/y.gif\" width=\"$w\" height=\"$y\">";
       }
   }
   return $ret;
