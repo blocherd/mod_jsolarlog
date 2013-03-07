@@ -77,7 +77,8 @@ function erzeugeDiagramDaten($daten)
       {
 	$y = floor($y);
 	$w = floor($Intervall/300);
-	$ret[] = "<img style=\"float:left; margin:0;\" src=\"http://www.spvgg-leidringen.de/solarlog_data/y.gif\" width=\"$w\" height=\"$y\">";
+	$ret[] = "<img width=\"1\" height=\"1\" src=\"http://www.spvgg-leidringen.de/solarlog_data/y.gif\" title=\"512 W, 0.03 kW/kWp\" style=\"background-color: rgb(255, 255, 0);\">";
+	//$ret[] = "<img style=\"float:left; margin:0;\" src=\"http://www.spvgg-leidringen.de/solarlog_data/y.gif\" width=\"$w\" height=\"$y\">";
       }
   }
   return $ret;
