@@ -18,11 +18,11 @@ class modJSolarlogHelper
   {
     foreach($daten as $aktuellerWert) 
     {
-      foreach ($aktuellerWert as $aktuellerSchlüssel => $aktuellerWert) 
+      foreach ($aktuellerWert as $aktuellerSchluessel => $aktuellerWert) 
       {
 	if (is_array($aktuellerWert))
 	{
-	   foreach ($aktuellerWert as $aktuellerSchlüssel2 => $aktuellerInnererWert) 
+	   foreach ($aktuellerWert as $aktuellerSchluessel2 => $aktuellerInnererWert) 
 	   { 
 	      $findMich   = 'new Array(';
 	      $pos = strpos($aktuellerInnererWert, $findMich);
@@ -40,13 +40,13 @@ class modJSolarlogHelper
 		$aktuellerInnererWert = explode( ',', trim(trim($aktuellerInnererWert), '"'));
 		
 	      }
-	      $ret_inner[$aktuellerSchlüssel2] = $aktuellerInnererWert; 
+	      $ret_inner[$aktuellerSchluessel2] = $aktuellerInnererWert; 
 	   }
-	   $ret[$aktuellerSchlüssel] = $ret_inner;
+	   $ret[$aktuellerSchluessel] = $ret_inner;
 	}
 	else	
 	{
-	  $ret[$aktuellerSchlüssel] = trim(trim($aktuellerWert), '"'); 
+	  $ret[$aktuellerSchluessel] = trim(trim($aktuellerWert), '"'); 
 	}
       }
     }
@@ -58,7 +58,7 @@ class modJSolarlogHelper
     $i = 0;
     foreach($daten as $aktuellerWert) 
     {
-      foreach ($aktuellerWert as $aktuellerSchlüssel => $aktuellerWert) 
+      foreach ($aktuellerWert as $aktuellerSchluessel => $aktuellerWert) 
       {
 	if (is_array($aktuellerWert))
 	{
@@ -81,7 +81,7 @@ class modJSolarlogHelper
     $i = 0;
     foreach($daten as $aktuellerWert) 
     {
-      foreach ($aktuellerWert as $aktuellerSchlüssel => $aktuellerWert) 
+      foreach ($aktuellerWert as $aktuellerSchluessel => $aktuellerWert) 
       {
 	if (is_array($aktuellerWert))
 	{
